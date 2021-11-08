@@ -13,6 +13,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BookCountComponent } from './components/book-count/book-count.component';
 import { MyBooksComponent } from './components/my-books/my-books.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent, BookCountComponent, MyBooksComponent],
@@ -20,6 +21,7 @@ import { MyBooksComponent } from './components/my-books/my-books.component';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,

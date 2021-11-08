@@ -1,1 +1,23 @@
-<p>my-books works!</p>
+<ng-container *ngIf="myBooks.length > 0; else empty">
+    <div class="reading-list-item" *ngFor="let book of myBooks">
+        <div>
+            <img class="reading-list-item--cover" [src]="book.coverUrl" alt="book cover" />
+        </div>
+        <div class="reading-list-item--details">
+            <strong class="reading-list-item--details--title">{{ book.title }}</strong>
+            <div class="reading-list-item--details--author">
+                {{ book.authors.join(',') }}
+            </div>
+            <div class="added-date">Added on: {{book.dateAdded | date}}</div>
+        </div>
+        <div>
+            <button mat-icon-button color="warn" [attr.aria-label]="'Remove ' + book.title + ' from reading list'"
+                (click)="removeFromReadingList(book)">
+                <mat-icon>remove_circle</mat-icon>
+            </button>
+        </div>
+    </div>
+</ng-container>
+<ng-template #empty>
+    <p class="empty">You haven't added any books to your list yet.</p>
+</ng-template>
