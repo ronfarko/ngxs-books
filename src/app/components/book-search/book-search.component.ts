@@ -35,4 +35,8 @@ export class BookSearchComponent {
   addBook(book: Book): void {
     this.bookSvc.addMyBook(book);
   }
+
+  loadNextPage(): void {
+    this.bookSvc.nextPage();
+  }
 }

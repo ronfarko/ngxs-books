@@ -11,6 +11,8 @@ import { map, tap } from 'rxjs/operators';
 export class BooksService {
   private booksSubject = new BehaviorSubject<Book[]>([]);
   private myBooksSubject = new BehaviorSubject<MyBook[]>([]);
+  private page = 0;
+  private keyword = '';
 
   constructor(private http: HttpClient, private snackBar: MatSnackBar) {}
 
@@ -23,10 +25,19 @@ export class BooksService {
   }
 
   async searchBooks(keyword: string): Promise<void> {
+    const reload = this.keyword != keyword;
+    this.keyword = keyword;
+
+    if (reload) {
+      this.page = 0;
+    }
+
     await firstValueFrom(
       this.http
         .get(
-          `https://www.googleapis.com/books/v1/volumes?q=${keyword}&maxResults=20&startIndex=1`
+          `https://www.googleapis.com/books/v1/volumes?q=${keyword}&maxResults=20&startIndex=${
+            this.page * 20
+          }`
         )
         .pipe(
           map((resp: any) => resp.items),
@@ -44,10 +55,19 @@ export class BooksService {
             }))
           ),
           tap((books) => {
-            this.booksSubject.next(books);
+            if (reload) this.booksSubject.next(books);
+            else {
+              const currentBooks = this.booksSubject.value;
+              this.booksSubject.next(currentBooks.concat(books));
+            }
           })
         )
     );
+  }
+
+  nextPage(): void {
+    this.page++;
+    this.searchBooks(this.keyword);
   }
 
   addMyBook(book: Book): void {
