@@ -1,5 +1,5 @@
-<ng-container *ngIf="myBooks.length > 0; else empty">
-    <div class="reading-list-item" *ngFor="let book of myBooks">
+<ng-container *ngIf="(myBooks$ | async)?.length; else empty">
+    <div class="reading-list-item" *ngFor="let book of myBooks$ | async">
         <div>
             <img class="reading-list-item--cover" [src]="book.coverUrl" alt="book cover" />
         </div>

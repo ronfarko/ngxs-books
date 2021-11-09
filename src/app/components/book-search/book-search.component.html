@@ -9,32 +9,34 @@
     </mat-form-field>
 </form>
 
-<div class="book-grid" *ngIf="books.length; else empty">
-    <mat-card *ngFor="let book of books">
-        <mat-card-title-group>
-            <mat-card-title> {{ book.title }}</mat-card-title>
-        </mat-card-title-group>
-        <mat-card-content>
-            <div class="book--content">
-                <div class="book--content--cover">
-                    <img src="{{ book.coverUrl }}" alt="book cover" />
-                </div>
-                <div class="book--content--info">
-                    <div><strong>Author:</strong> {{ book.authors.join(',') }}</div>
-                    <div><strong>Publisher:</strong> {{ book.publisher }}</div>
-                    <div>
-                        <strong>Published:</strong> {{ formatDate(book.publishedDate) }}
+<div *ngIf="(books$ | async)?.length; else empty">
+    <div class="book-grid">
+        <mat-card *ngFor="let book of books$ | async">
+            <mat-card-title-group>
+                <mat-card-title> {{ book.title }}</mat-card-title>
+            </mat-card-title-group>
+            <mat-card-content>
+                <div class="book--content">
+                    <div class="book--content--cover">
+                        <img src="{{ book.coverUrl }}" alt="book cover" />
                     </div>
-                    <p [innerHTML]="book.description"></p>
-                    <div>
-                        <button mat-flat-button color="warn" data-testing="add-book-button" (click)="addBook(book)">
-                            Want to Read
-                        </button>
+                    <div class="book--content--info">
+                        <div><strong>Author:</strong> {{ book.authors.join(',') }}</div>
+                        <div><strong>Publisher:</strong> {{ book.publisher }}</div>
+                        <div>
+                            <strong>Published:</strong> {{ formatDate(book.publishedDate) }}
+                        </div>
+                        <p [innerHTML]="book.description"></p>
+                        <div>
+                            <button mat-flat-button color="warn" data-testing="add-book-button" (click)="addBook(book)">
+                                Want to Read
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </mat-card-content>
-    </mat-card>
+            </mat-card-content>
+        </mat-card>
+    </div>
 </div>
 
 <ng-template #empty>

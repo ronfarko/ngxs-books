@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { Observable, of } from 'rxjs';
 import { Book } from 'src/app/models/book.model';
 import { BooksService } from 'src/app/services/books.service';
 
@@ -13,17 +14,17 @@ export class BookSearchComponent {
     term: '',
   });
 
-  books: Book[] = [];
+  books$: Observable<Book[]> = of([]);
 
-  constructor(
-    private readonly fb: FormBuilder,
-    private bookSvc: BooksService
-  ) {}
+  constructor(private readonly fb: FormBuilder, private bookSvc: BooksService) {
+    this.books$ = this.bookSvc.books$;
+  }
 
-  async searchBooks(): Promise<void> {
+  searchBooks(): void {
     const term = this.searchForm.value.term;
+    console.log(term);
     if (term) {
-      this.books = await this.bookSvc.searchBooks(term);
+      this.bookSvc.searchBooks(term);
     }
   }
 
