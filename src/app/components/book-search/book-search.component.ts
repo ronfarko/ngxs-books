@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { Observable, of } from 'rxjs';
+import { Select, Store } from '@ngxs/store';
+import { Observable } from 'rxjs';
 import { Book } from 'src/app/models/book.model';
-import { BooksService } from 'src/app/services/books.service';
+import { AppState } from 'src/app/store/books.state';
+import * as actions from '../../store/books.actions';
 
 @Component({
   selector: 'app-book-search',
@@ -14,17 +16,14 @@ export class BookSearchComponent {
     term: '',
   });
 
-  books$: Observable<Book[]> = of([]);
+  @Select(AppState.booksList) books$!: Observable<Book[]>;
 
-  constructor(private readonly fb: FormBuilder, private bookSvc: BooksService) {
-    this.books$ = this.bookSvc.books$;
-  }
+  constructor(private store: Store, private readonly fb: FormBuilder) {}
 
   searchBooks(): void {
     const term = this.searchForm.value.term;
-    console.log(term);
     if (term) {
-      this.bookSvc.searchBooks(term);
+      this.store.dispatch(new actions.BooksList.Search(term));
     }
   }
 
@@ -33,10 +32,10 @@ export class BookSearchComponent {
   }
 
   addBook(book: Book): void {
-    this.bookSvc.addMyBook(book);
+    this.store.dispatch(new actions.MyBooks.Add(book));
   }
 
   loadNextPage(): void {
-    this.bookSvc.nextPage();
+    this.store.dispatch(new actions.BooksList.LoadMore());
   }
 }

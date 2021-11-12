@@ -17,6 +17,11 @@ import { MyBooksComponent } from './components/my-books/my-books.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LoadingComponent } from './components/loading/loading.component';
 import { LoadingInterceptor } from './services/loading.interceptor';
+import { NgxsModule } from '@ngxs/store';
+import { environment } from 'src/environments/environment';
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
+import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
+import { AppState } from './store/books.state';
 
 @NgModule({
   declarations: [
@@ -36,6 +41,11 @@ import { LoadingInterceptor } from './services/loading.interceptor';
     MatSidenavModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
+    NgxsModule.forRoot([AppState], {
+      developmentMode: !environment.production,
+    }),
+    NgxsReduxDevtoolsPluginModule.forRoot(),
+    NgxsLoggerPluginModule.forRoot(),
   ],
   providers: [
     {

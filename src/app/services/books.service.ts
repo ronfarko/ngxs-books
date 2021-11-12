@@ -1,42 +1,27 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Book, MyBook } from '../models/book.model';
+import { Book } from '../models/book.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Store } from '@ngxs/store';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BooksService {
-  private booksSubject = new BehaviorSubject<Book[]>([]);
-  private myBooksSubject = new BehaviorSubject<MyBook[]>([]);
-  private page = 0;
-  private keyword = '';
+  constructor(
+    private store: Store,
+    private http: HttpClient,
+    private snackBar: MatSnackBar
+  ) {}
 
-  constructor(private http: HttpClient, private snackBar: MatSnackBar) {}
-
-  get myBooks$(): Observable<MyBook[]> {
-    return this.myBooksSubject.asObservable();
-  }
-
-  get books$(): Observable<Book[]> {
-    return this.booksSubject.asObservable();
-  }
-
-  async searchBooks(keyword: string): Promise<void> {
-    const reload = this.keyword != keyword;
-    this.keyword = keyword;
-
-    if (reload) {
-      this.page = 0;
-    }
-
-    await firstValueFrom(
+  async searchBooks(keyword: string, page = 0): Promise<Book[]> {
+    return firstValueFrom(
       this.http
         .get(
           `https://www.googleapis.com/books/v1/volumes?q=${keyword}&maxResults=20&startIndex=${
-            this.page * 20
+            page * 20
           }`
         )
         .pipe(
@@ -53,52 +38,14 @@ export class BooksService {
                 : '',
               coverUrl: item.volumeInfo?.imageLinks?.thumbnail,
             }))
-          ),
-          tap((books) => {
-            if (reload) this.booksSubject.next(books);
-            else {
-              const currentBooks = this.booksSubject.value;
-              this.booksSubject.next(currentBooks.concat(books));
-            }
-          })
+          )
         )
     );
   }
 
-  nextPage(): void {
-    this.page++;
-    this.searchBooks(this.keyword);
-  }
-
-  addMyBook(book: Book): void {
-    const books = this.myBooksSubject.value;
-    if (books.findIndex((b) => b.id === book.id) >= 0) {
-      this.showSnackbar('Book is already in your list');
-      return;
-    }
-
-    books.push({
-      ...book,
-      dateAdded: new Intl.DateTimeFormat('en-US').format(new Date()),
-    });
-
-    this.myBooksSubject.next(books);
-    this.showSnackbar('Book is added');
-  }
-
-  removeMyBook(book: MyBook): void {
-    const books = this.myBooksSubject.value;
-    const index = books.indexOf(book);
-    if (index >= 0) {
-      books.splice(index, 1);
-      this.myBooksSubject.next(books);
-      this.showSnackbar('Book is removed');
-    }
-  }
-
-  private showSnackbar(msg: string): void {
+  showSnackbar(msg: string): void {
     this.snackBar.open(msg, '', {
-      duration: 1000,
+      duration: 2000,
     });
   }
 }

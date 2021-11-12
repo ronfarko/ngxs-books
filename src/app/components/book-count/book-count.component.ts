@@ -1,19 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { MyBook } from 'src/app/models/book.model';
-import { BooksService } from 'src/app/services/books.service';
+import { Component } from '@angular/core';
+import { Select } from '@ngxs/store';
+import { Observable } from 'rxjs';
+import { AppState } from 'src/app/store/books.state';
 
 @Component({
   selector: 'app-book-count',
   templateUrl: './book-count.component.html',
   styleUrls: ['./book-count.component.scss'],
 })
-export class BookCountComponent implements OnInit {
-  myBooks$: Observable<MyBook[]> = of([]);
-
-  constructor(private booksSvc: BooksService) {}
-
-  ngOnInit(): void {
-    this.myBooks$ = this.booksSvc.myBooks$;
-  }
+export class BookCountComponent {
+  @Select(AppState.myBooksCount) count$!: Observable<number>;
 }

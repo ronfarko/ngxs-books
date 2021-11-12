@@ -1,23 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Component } from '@angular/core';
+import { Select, Store } from '@ngxs/store';
+import { Observable } from 'rxjs';
 import { MyBook } from 'src/app/models/book.model';
-import { BooksService } from 'src/app/services/books.service';
+import { AppState } from 'src/app/store/books.state';
+import * as actions from '../../store/books.actions';
 
 @Component({
   selector: 'app-my-books',
   templateUrl: './my-books.component.html',
   styleUrls: ['./my-books.component.scss'],
 })
-export class MyBooksComponent implements OnInit {
-  myBooks$: Observable<MyBook[]> = of([]);
+export class MyBooksComponent {
+  @Select(AppState.myBooks) myBooks$!: Observable<MyBook[]>;
 
-  constructor(private booksSvc: BooksService) {}
-
-  ngOnInit(): void {
-    this.myBooks$ = this.booksSvc.myBooks$;
-  }
+  constructor(private store: Store) {}
 
   removeFromReadingList(book: MyBook): void {
-    this.booksSvc.removeMyBook(book);
+    this.store.dispatch(new actions.MyBooks.Remove(book.id));
   }
 }
