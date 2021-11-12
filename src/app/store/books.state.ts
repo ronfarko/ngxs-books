@@ -60,25 +60,23 @@ export class AppState {
     action: actions.MyBooks.Add
   ) {
     const state = ctx.getState();
+    const myBook = {
+      ...action.book,
+      dateAdded: new Intl.DateTimeFormat('en-US').format(new Date()),
+    }; // mark book as Added
+    const books = [...state.booksList];
+    const index = books.findIndex((b) => b.id === action.book.id);
+    books.splice(index, 1, {
+      ...books[index],
+      isAdded: true,
+    });
+    ctx.patchState({
+      booksList: books,
+      myBooks: [...state.myBooks, myBook],
+    });
+    this.booksSvc.showSnackbar(`Added: ${myBook.title}`);
+  } // ----------- Remove My Book -----------
 
-    // check if book already exists
-    if (state.myBooks.findIndex((b) => b.id === action.book.id) < 0) {
-      const myBook = {
-        ...action.book,
-        dateAdded: new Intl.DateTimeFormat('en-US').format(new Date()),
-      };
-
-      ctx.patchState({
-        myBooks: [...state.myBooks, myBook],
-      });
-
-      this.booksSvc.showSnackbar(`Added: ${myBook.title}`);
-    } else {
-      this.booksSvc.showSnackbar('This book is alredy in the Reading List');
-    }
-  }
-
-  // ----------- Remove My Book -----------
   @Action(actions.MyBooks.Remove)
   async removeMyBook(
     ctx: StateContext<BooksStateModel>,
@@ -87,12 +85,19 @@ export class AppState {
     const state = ctx.getState();
     const index = state.myBooks.findIndex((b) => b.id === action.bookId);
     if (index >= 0) {
+      // mark book as Not-Added
+      const booksList = [...state.booksList];
+      const booksIndex = booksList.findIndex((b) => b.id === action.bookId);
+      booksList.splice(booksIndex, 1, {
+        ...booksList[booksIndex],
+        isAdded: false,
+      });
       const myBooks = [...state.myBooks];
       const deletedBook = myBooks.splice(index, 1);
       ctx.patchState({
+        booksList: booksList,
         myBooks: myBooks,
       });
-
       this.booksSvc.showSnackbar(`Removed: ${deletedBook[0]?.title}`);
     }
   }

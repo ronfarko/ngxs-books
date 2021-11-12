@@ -6,6 +6,7 @@ export interface Book {
   publisher?: string;
   publishedDate?: string;
   coverUrl?: string;
+  isAdded?: boolean;
 }
 
 export interface MyBook extends Book {
