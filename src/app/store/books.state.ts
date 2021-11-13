@@ -5,6 +5,7 @@ import { BooksService } from '../services/books.service';
 import * as actions from './books.actions';
 
 export interface BooksStateModel {
+  loadingCount: number;
   searchTerm: string;
   page: number;
   booksList: Book[];
@@ -14,6 +15,7 @@ export interface BooksStateModel {
 @State<BooksStateModel>({
   name: 'app',
   defaults: {
+    loadingCount: 0,
     searchTerm: '',
     page: 0,
     booksList: [],
@@ -55,10 +57,7 @@ export class AppState {
 
   // ----------- Add My Book -----------
   @Action(actions.MyBooks.Add)
-  async addMyBook(
-    ctx: StateContext<BooksStateModel>,
-    action: actions.MyBooks.Add
-  ) {
+  addMyBook(ctx: StateContext<BooksStateModel>, action: actions.MyBooks.Add) {
     const state = ctx.getState();
     const myBook = {
       ...action.book,
@@ -78,7 +77,7 @@ export class AppState {
   } // ----------- Remove My Book -----------
 
   @Action(actions.MyBooks.Remove)
-  async removeMyBook(
+  removeMyBook(
     ctx: StateContext<BooksStateModel>,
     action: actions.MyBooks.Remove
   ) {
@@ -102,6 +101,32 @@ export class AppState {
     }
   }
 
+  // ----------- Show Loding -----------
+  @Action(actions.Loading.Show)
+  showLoading(
+    ctx: StateContext<BooksStateModel>,
+    action: actions.Loading.Show
+  ) {
+    const state = ctx.getState();
+    const newCount = state.loadingCount + 1;
+    ctx.patchState({
+      loadingCount: newCount,
+    });
+  }
+
+  // ----------- Hide Loding -----------
+  @Action(actions.Loading.Hide)
+  hideLoading(
+    ctx: StateContext<BooksStateModel>,
+    action: actions.Loading.Hide
+  ) {
+    const state = ctx.getState();
+    const newCount = state.loadingCount > 0 ? state.loadingCount - 1 : 0;
+    ctx.patchState({
+      loadingCount: newCount,
+    });
+  }
+
   // ----------- selectors -----------
   @Selector()
   static booksList(state: BooksStateModel) {
@@ -116,5 +141,10 @@ export class AppState {
   @Selector()
   static myBooksCount(state: BooksStateModel) {
     return state.myBooks.length;
+  }
+
+  @Selector()
+  static showLoading(state: BooksStateModel) {
+    return state.loadingCount > 0;
   }
 }

@@ -22,3 +22,13 @@ export namespace MyBooks {
     constructor(public bookId: string) {}
   }
 }
+
+export namespace Loading {
+  export class Show {
+    static readonly type = '[Book Search] Show Loading';
+  }
+
+  export class Hide {
+    static readonly type = '[Book Search] Hide Loading';
+  }
+}

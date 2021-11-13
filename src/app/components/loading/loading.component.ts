@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { LoadingService } from 'src/app/services/loading.service';
+import { Select } from '@ngxs/store';
+import { Observable } from 'rxjs';
+import { AppState } from 'src/app/store/books.state';
 
 @Component({
   selector: 'app-loading',
@@ -7,5 +9,5 @@ import { LoadingService } from 'src/app/services/loading.service';
   styleUrls: ['./loading.component.scss'],
 })
 export class LoadingComponent {
-  constructor(public loadingSvc: LoadingService) {}
+  @Select(AppState.showLoading) showLoading$!: Observable<boolean>;
 }

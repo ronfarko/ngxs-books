@@ -7,26 +7,27 @@ import {
   HttpResponse,
 } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { LoadingService } from './loading.service';
+import { Store } from '@ngxs/store';
+import * as actions from '../store/books.actions';
 
 @Injectable()
 export class LoadingInterceptor implements HttpInterceptor {
-  constructor(private loadingSvc: LoadingService) {}
+  constructor(private store: Store) {}
 
   intercept(
     request: HttpRequest<unknown>,
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
-    this.loadingSvc.show();
+    this.store.dispatch(new actions.Loading.Show());
     return next.handle(request).pipe(
       tap(
         (event: HttpEvent<any>) => {
           if (event instanceof HttpResponse) {
-            this.loadingSvc.hide();
+            this.store.dispatch(new actions.Loading.Hide());
           }
         },
         () => {
-          this.loadingSvc.hide();
+          this.store.dispatch(new actions.Loading.Hide());
         }
       )
     );
