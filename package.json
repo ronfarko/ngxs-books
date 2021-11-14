@@ -23,6 +23,7 @@
     "@ngxs/devtools-plugin": "^3.7.2",
     "@ngxs/form-plugin": "^3.7.2",
     "@ngxs/logger-plugin": "^3.7.2",
+    "@ngxs/storage-plugin": "^3.7.2",
     "@ngxs/store": "^3.7.2",
     "rxjs": "~7.4.0",
     "tslib": "^2.3.0",

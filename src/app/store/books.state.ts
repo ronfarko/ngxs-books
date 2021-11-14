@@ -56,10 +56,7 @@ export class AppState {
 
   // ----------- LoadMore Action -----------
   @Action(actions.BooksList.LoadMore)
-  async addMoreBooks(
-    ctx: StateContext<BooksStateModel>,
-    action: actions.BooksList.LoadMore
-  ) {
+  async addMoreBooks(ctx: StateContext<BooksStateModel>) {
     const state = ctx.getState();
     const page = state.page + 1;
     const books = await this.booksSvc.searchBooks(state.searchTerm, page);
@@ -117,10 +114,7 @@ export class AppState {
 
   // ----------- Show Loding -----------
   @Action(actions.Loading.Show)
-  showLoading(
-    ctx: StateContext<BooksStateModel>,
-    action: actions.Loading.Show
-  ) {
+  showLoading(ctx: StateContext<BooksStateModel>) {
     const state = ctx.getState();
     const newCount = state.loadingCount + 1;
     ctx.patchState({
@@ -130,10 +124,7 @@ export class AppState {
 
   // ----------- Hide Loding -----------
   @Action(actions.Loading.Hide)
-  hideLoading(
-    ctx: StateContext<BooksStateModel>,
-    action: actions.Loading.Hide
-  ) {
+  hideLoading(ctx: StateContext<BooksStateModel>) {
     const state = ctx.getState();
     const newCount = state.loadingCount > 0 ? state.loadingCount - 1 : 0;
     ctx.patchState({
