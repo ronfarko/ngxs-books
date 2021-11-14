@@ -12,6 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { BooksRoutingModule } from './books-routing.module';
 import { BooksComponent } from './books.component';
 import { BookSearchComponent } from '../../components/book-search/book-search.component';
+import { NgxsFormPluginModule } from '@ngxs/form-plugin';
 
 @NgModule({
   declarations: [BooksComponent, BookSearchComponent],
@@ -24,6 +25,7 @@ import { BookSearchComponent } from '../../components/book-search/book-search.co
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    NgxsFormPluginModule,
   ],
 })
 export class BooksModule {}

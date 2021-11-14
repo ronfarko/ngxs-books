@@ -10,6 +10,14 @@ export interface BooksStateModel {
   page: number;
   booksList: Book[];
   myBooks: MyBook[];
+  searchFormState: {
+    model?: {
+      term: string;
+    };
+    dirty: false;
+    status: '';
+    errors: {};
+  };
 }
 
 @State<BooksStateModel>({
@@ -20,6 +28,12 @@ export interface BooksStateModel {
     page: 0,
     booksList: [],
     myBooks: [],
+    searchFormState: {
+      model: undefined,
+      dirty: false,
+      status: '',
+      errors: {},
+    },
   },
 })
 @Injectable()
